@@ -1,0 +1,276 @@
+{
+  "name": "Execuções Jupyters",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -256,
+        -304
+      ],
+      "id": "9d01da6f-a33f-4b9f-a6ce-920127e2cb55",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "command": "papermill \"//192.168.0.210/exata$/BUSINESS INTELLIGENCE/bucket-exata/script/PRONTOS/execucoes/holding/emprestimo_investimento-teste.ipynb\" \"//192.168.0.210/exata$/BUSINESS INTELLIGENCE/bucket-exata/script/PRONTOS/execucoes/emprestimo_investimento-teste_saida.ipynb\" -k python3 --log-output",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -800
+      ],
+      "id": "21469ca7-1be4-47d8-9843-6cb81a609e5f",
+      "name": "Emp Inves",
+      "credentials": {
+        "sshPassword": {
+          "id": "Al5ciq3tiVyQVpQD",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Holding",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cd4e464f-5290-48b6-9347-d932906bb008"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Holding"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "51f71628-0998-4181-b7b6-a6dd29230861",
+                    "leftValue": "={{ $json.Setor }}",
+                    "rightValue": "Allp",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Allp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -16,
+        -304
+      ],
+      "id": "ef890cb8-4746-4ad9-afc6-239ca15a1ee4",
+      "name": "Setores"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Relatorio }}",
+                    "rightValue": "Fluxo Financeiro",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "51a679f9-39a0-4cb2-8553-2ea5ae904f2e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Fluxo Financeiro"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        288,
+        -192
+      ],
+      "id": "631e91a4-563c-4da4-84df-1df085496011",
+      "name": "Allp"
+    },
+    {
+      "parameters": {
+        "command": "papermill \"//192.168.0.210/exata$/BUSINESS INTELLIGENCE/bucket-exata/script/PRONTOS/allpfit - fluxo financeiro academias.ipynb\" \"//192.168.0.210/exata$/BUSINESS INTELLIGENCE/bucket-exata/script/PRONTOS/execucoes/allpfit - fluxo financeiro academias_saida.ipynb\" -k python3 --log-output",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        560,
+        -272
+      ],
+      "id": "af6182ce-b90d-484e-9227-674e60695e3a",
+      "name": "Fluxo Financeiro Allp",
+      "credentials": {
+        "sshPassword": {
+          "id": "Al5ciq3tiVyQVpQD",
+          "name": "SSH Password account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Relatorio }}",
+                    "rightValue": "Emprestimo Investimento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "04df9e41-734a-4115-b85b-f7dac9b6dd23"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Emp Inv"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        304,
+        -576
+      ],
+      "id": "a6e8b306-febd-4b87-91f9-fdcea66d6e99",
+      "name": "Holding"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Setores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Emp Inves": {
+      "main": [
+        []
+      ]
+    },
+    "Setores": {
+      "main": [
+        [
+          {
+            "node": "Holding",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Allp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allp": {
+      "main": [
+        [
+          {
+            "node": "Fluxo Financeiro Allp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Holding": {
+      "main": [
+        [
+          {
+            "node": "Emp Inves",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "06658970-c54d-40dc-88d3-7f902bbfefad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f0e738ec794ba1e5c3ef62092fa0b8d279304ac33905812090932de2c95584d5"
+  },
+  "id": "LSs1u4RxYBRC03EA",
+  "tags": []
+}

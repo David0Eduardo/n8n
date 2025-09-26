@@ -1,0 +1,623 @@
+{
+  "name": "Discord Integração",
+  "nodes": [
+    {
+      "parameters": {
+        "guildIds": [
+          "1136647402854555778"
+        ],
+        "channelIds": [
+          "1136647402854555781"
+        ],
+        "roleIds": [
+          "1420775858586521732",
+          "1416032655362756771",
+          "1421117283639754782"
+        ],
+        "pattern": "botMention",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-discord-trigger.discordTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        -16
+      ],
+      "id": "25797d51-bf3f-42b6-9860-37141d3f6321",
+      "name": "Discord Trigger",
+      "credentials": {
+        "discordBotTriggerApi": {
+          "id": "82AloUW9xY9BAIaW",
+          "name": "Discord Bot Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendAndWait",
+        "guildId": {
+          "__rl": true,
+          "value": "1136647402854555778",
+          "mode": "list",
+          "cachedResultName": "teste",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1136647402854555781",
+          "mode": "list",
+          "cachedResultName": "geral",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778/1136647402854555781"
+        },
+        "message": "Qual Fluxo vai ser atualizado?",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Relatorio:",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Emprestimo Investimento"
+                  },
+                  {
+                    "option": "~"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "messageButtonLabel": "Respond",
+          "responseFormButtonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -144
+      ],
+      "id": "fe0633a1-8066-4348-8d56-47df97a41966",
+      "name": "Message Holding",
+      "webhookId": "e9d774f9-374e-467d-b0fc-d000e928a695",
+      "credentials": {
+        "discordBotApi": {
+          "id": "TrjKiMlRLjuu7lEm",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a92e21aa-a00f-4a24-a926-89de8c9579cc",
+              "leftValue": "={{ $json.stderr }}",
+              "rightValue": "error",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        -64
+      ],
+      "id": "4cc86ce8-a858-44c9-ba77-f74701f51f8f",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        -48
+      ],
+      "id": "70821e1b-4ac6-45c6-b00e-b7f5851287d8",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "1136647402854555778",
+          "mode": "list",
+          "cachedResultName": "teste",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1421093932023939082",
+          "mode": "list",
+          "cachedResultName": "report-ti",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778/1421093932023939082"
+        },
+        "content": "=Fluxo:  {{ $('Message Holding').item.json.data['Relatorio:'] }}.\nSolicitado por: {{ $('Setores').item.json.user.username }}\nNão rodou corretamente:\n{{ $json.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -96
+      ],
+      "id": "eab3358f-9426-447e-b1cd-24c054c701b4",
+      "name": "Error Message",
+      "webhookId": "4fd1f827-8a98-497d-8eaf-8bcba59f9501",
+      "alwaysOutputData": false,
+      "credentials": {
+        "discordBotApi": {
+          "id": "TrjKiMlRLjuu7lEm",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "guildId": {
+          "__rl": true,
+          "value": "1136647402854555778",
+          "mode": "list",
+          "cachedResultName": "teste",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1136647402854555781",
+          "mode": "list",
+          "cachedResultName": "geral",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778/1136647402854555781"
+        },
+        "content": "=O  relatorio foi atualizado com sucesso",
+        "options": {
+          "message_reference": "={{ $('Discord Trigger').item.json.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        80
+      ],
+      "id": "12d15e55-4263-4703-bd5f-8de9a0c32649",
+      "name": "Sucessfull Message",
+      "webhookId": "bc75abfa-8431-4741-8ae0-33cb27174cdb",
+      "credentials": {
+        "discordBotApi": {
+          "id": "TrjKiMlRLjuu7lEm",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pega o stderr\nlet text = $input.first().json.stderr;\n\n// Encontra a linha do \"Output Notebook\"\nconst match = text.match(/Output Notebook:\\s*(.*)/);\n\nlet content;\nif (match) {\n  content = `📓 Log salvo em:\\n${match[1].trim()}`;\n} else {\n  content = \"❌ Não foi possível localizar o caminho do Output Notebook.\";\n}\n\n// Garante limite Discord\nif (content.length > 2000) {\n  content = content.slice(0, 1999);\n}\n\nreturn [{ json: { content } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        -96
+      ],
+      "id": "6052cef5-e5f3-4fa9-bbfa-791a9e4a01a1",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "LSs1u4RxYBRC03EA",
+          "mode": "list",
+          "cachedResultName": "Execuções Jupyters"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        -64
+      ],
+      "id": "6494165f-cede-4dee-8a2c-836a126408a9",
+      "name": "Execute Jupyter"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.roles }}",
+                    "rightValue": "1420775858586521732",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    },
+                    "id": "d0e0f148-c033-48ca-aac4-7e9a2c491e2b"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Holding"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "150aa2b0-3adc-46b0-86d2-0e81d58d61e0",
+                    "leftValue": "={{ $json.roles }}",
+                    "rightValue": "1421117283639754782",
+                    "operator": {
+                      "type": "array",
+                      "operation": "contains",
+                      "rightType": "any"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Allp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        176,
+        -16
+      ],
+      "id": "a90f8a2a-813d-4490-a73f-437fdee1f484",
+      "name": "Setores"
+    },
+    {
+      "parameters": {
+        "url": "=https://discord.com/api/v10/guilds/{{ $json.guildId }}/members/{{ $json.authorId }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "discordBotApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "c6174f06-c10e-460f-8447-c83e2c96143b",
+      "name": "Dados Solicitante",
+      "credentials": {
+        "discordBotApi": {
+          "id": "TrjKiMlRLjuu7lEm",
+          "name": "Discord Bot account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "82546ba9-ea3d-4959-aef5-aef4ed5dc1b2",
+              "name": "Relatorio",
+              "value": "={{ $json.data['Relatorio:'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a720fadf-6ebf-4ccc-a75e-31c0baccd2fb",
+              "name": "Setor",
+              "value": "Holding",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        -144
+      ],
+      "id": "a2c25c58-4272-4d58-99f1-9f64ce3965c6",
+      "name": "Edit Holding"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "82546ba9-ea3d-4959-aef5-aef4ed5dc1b2",
+              "name": "Relatorio",
+              "value": "={{ $json.data['Relatorio:'] }}",
+              "type": "string"
+            },
+            {
+              "id": "a720fadf-6ebf-4ccc-a75e-31c0baccd2fb",
+              "name": "Setor",
+              "value": "Allp",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        48
+      ],
+      "id": "c3cf3d8d-3182-4019-8f54-597d17777d23",
+      "name": "Edit Allp"
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "sendAndWait",
+        "guildId": {
+          "__rl": true,
+          "value": "1136647402854555778",
+          "mode": "list",
+          "cachedResultName": "teste",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778"
+        },
+        "channelId": {
+          "__rl": true,
+          "value": "1136647402854555781",
+          "mode": "list",
+          "cachedResultName": "geral",
+          "cachedResultUrl": "https://discord.com/channels/1136647402854555778/1136647402854555781"
+        },
+        "message": "Qual Fluxo vai ser atualizado?",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Relatorio:",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Fluxo Financeiro"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "messageButtonLabel": "Respond",
+          "responseFormButtonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        400,
+        48
+      ],
+      "id": "e0d79b0f-184d-4e30-a90e-e8f9e705bf95",
+      "name": "Message Allp",
+      "webhookId": "e9d774f9-374e-467d-b0fc-d000e928a695",
+      "credentials": {
+        "discordBotApi": {
+          "id": "TrjKiMlRLjuu7lEm",
+          "name": "Discord Bot account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Discord Trigger": {
+      "main": [
+        [
+          {
+            "node": "Dados Solicitante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Holding": {
+      "main": [
+        [
+          {
+            "node": "Edit Holding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sucessfull Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Message": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sucessfull Message": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Jupyter": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setores": {
+      "main": [
+        [
+          {
+            "node": "Message Holding",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message Allp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados Solicitante": {
+      "main": [
+        [
+          {
+            "node": "Setores",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Holding": {
+      "main": [
+        [
+          {
+            "node": "Execute Jupyter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Allp": {
+      "main": [
+        [
+          {
+            "node": "Edit Allp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Allp": {
+      "main": [
+        [
+          {
+            "node": "Execute Jupyter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0893ddde-db19-4719-8de1-8c6a0fee29d2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f0e738ec794ba1e5c3ef62092fa0b8d279304ac33905812090932de2c95584d5"
+  },
+  "id": "s2ZE4YEkFNZ9udHH",
+  "tags": []
+}
