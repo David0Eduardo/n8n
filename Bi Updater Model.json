@@ -1,0 +1,696 @@
+{
+  "name": "Modelo Atualizador Bi",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "A CADA DIA TRATA-INSERE/ATUALIZA DADOS DA PLANILHA(UNICA) NO SQL\n",
+        "height": 592,
+        "width": 1664
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "1a05bec9-92bd-44b1-938a-7e11a5b98c84",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.powerbi.com/v1.0/myorg/groups/bd36c2a2-b246-42be-80eb-d401f0bbebe5/datasets/79466232-4aff-4f68-ad1a-eeadf1c1b649/refreshes",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2816,
+        160
+      ],
+      "id": "4cf9fa32-875b-48d1-aaef-177b140e9d50",
+      "name": "Atualizar o BI",
+      "executeOnce": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1Qy3rjQPeMsT2g-53ZxSJtOt2u2VGvZW0zmKFyIuVSVw",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Colaboradores",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Qy3rjQPeMsT2g-53ZxSJtOt2u2VGvZW0zmKFyIuVSVw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1056,
+        208
+      ],
+      "id": "d03285c6-62aa-4080-bcd9-206f144afbbb",
+      "name": "Capturar Tabela",
+      "retryOnFail": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "gLDvvKprWgNvOdqb",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM credential_azure WHERE [id] = '3599'"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        2640,
+        160
+      ],
+      "id": "955d3d30-cfd2-4e31-90d9-5da2f66cdf73",
+      "name": "Capturar Token",
+      "executeOnce": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3104,
+        144
+      ],
+      "id": "966a5a90-408d-4ee0-9661-bab6ad2b8adc",
+      "name": "Finalizar"
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3216,
+        352
+      ],
+      "id": "aaeba242-a158-46d8-841e-54b1126888aa",
+      "name": "Wait",
+      "webhookId": "3e23997c-fd15-430f-83cf-3ede1c0eb61e"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        208
+      ],
+      "id": "c93749f3-a4e2-4f93-bfbb-8d5ee04eb968",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "content": "Atualizar o BI\n",
+        "height": 592,
+        "width": 864,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2512,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "e357931b-755d-4db8-b108-0644c42fb991",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "o52WeNcdPwzjazy5",
+          "mode": "list",
+          "cachedResultName": "Atualizar Token Azure"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3008,
+        256
+      ],
+      "id": "c35c8af6-bf52-4cc3-a078-6359b8dd7321",
+      "name": "Chamar Novo Token"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "controle",
+        "updateKey": "row_number",
+        "columns": "row_number, nome_colaborador, setor_colaborador, email_colaborador, senha_email, id_portao, status_colaborador, data_ativacao, data_desligamento"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        2256,
+        96
+      ],
+      "id": "4251aebb-6451-4121-8762-28290aa77404",
+      "name": "Update Raiz",
+      "executeOnce": false,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "table": "controle",
+        "columns": "row_number, nome_colaborador, setor_colaborador, email_colaborador, senha_email, id_portao, status_colaborador, data_ativacao, data_desligamento"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        2256,
+        256
+      ],
+      "id": "9bb83cb8-2d86-4f4a-9da5-f3f4f5b58f62",
+      "name": "Insert Raiz",
+      "executeOnce": false,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    '{{ $json.row_number }}' AS row_number,\n    CASE \n        WHEN EXISTS (\n            SELECT 1 \n            FROM controle\n            WHERE row_number = '{{ $json.row_number }}'\n        ) THEN 0\n        ELSE 1\n    END AS nao_existe;\n"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "df963286-3742-4af8-aa7c-a8adb7969a6c",
+      "name": "Microsoft SQL1",
+      "executeOnce": false,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "row_number",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1520,
+        176
+      ],
+      "id": "ec4aa02f-658c-49f4-9230-8cdac0171322",
+      "name": "Merge",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "de79ee7e-f6ef-4a44-b4df-07bdb753c1a4",
+              "name": "row_number",
+              "value": "={{ $json.row_number }}",
+              "type": "number"
+            },
+            {
+              "id": "743f7d31-4a4d-4a4c-bd62-a1ceadf6cad7",
+              "name": "nao_existe",
+              "value": "={{ $json.nao_existe }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        112
+      ],
+      "id": "8ad6ff39-7c68-4722-92dc-0204010296b6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT row_number FROM controle"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1216,
+        272
+      ],
+      "id": "cfb0229c-0f82-435b-bf39-f1b94bb03277",
+      "name": "Microsoft SQL",
+      "executeOnce": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.nao_existe }}",
+                    "rightValue": 0,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    },
+                    "id": "211fddfc-c7ce-4a1e-953c-e95304f5d52e"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Update"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "df820eb6-f761-4f90-b13c-baabd3f0f16d",
+                    "leftValue": "={{ $json.nao_existe }}",
+                    "rightValue": 1,
+                    "operator": {
+                      "type": "number",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Inserir Dados"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1984,
+        160
+      ],
+      "id": "4db8e353-7fba-4232-9401-1a449a769456",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "row_number",
+              "field2": "row_number"
+            }
+          ]
+        },
+        "resolve": "preferInput1",
+        "fuzzyCompare": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.compareDatasets",
+      "typeVersion": 2.3,
+      "position": [
+        1744,
+        176
+      ],
+      "id": "c52193b3-3f73-405b-925a-9876cfd5a13d",
+      "name": "Compare Datasets"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "table": "=controle",
+        "deleteKey": "row_number"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        2096,
+        400
+      ],
+      "id": "9cf48257-7b53-41e5-81f5-ecea03e87db9",
+      "name": "Microsoft SQL2",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        400
+      ],
+      "id": "672e6d7e-9927-4c23-9881-da5bc91c6544",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6c92c95c-50c5-42ea-aeba-31a00811c497",
+              "name": "row_number",
+              "value": "={{ $json.row_number }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        272
+      ],
+      "id": "2c5c8719-ae5a-4ff5-90a9-0c5b1b26b259",
+      "name": "Edit Fields1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Atualizar o BI": {
+      "main": [
+        [
+          {
+            "node": "Finalizar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chamar Novo Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capturar Tabela": {
+      "main": [
+        [
+          {
+            "node": "Microsoft SQL1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Microsoft SQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capturar Token": {
+      "main": [
+        [
+          {
+            "node": "Atualizar o BI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Capturar Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Capturar Tabela",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamar Novo Token": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Raiz": {
+      "main": [
+        [
+          {
+            "node": "Capturar Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert Raiz": {
+      "main": [
+        [
+          {
+            "node": "Capturar Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Update Raiz",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert Raiz",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Datasets": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Microsoft SQL2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Microsoft SQL2": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e3929609-a5ad-4f50-91b8-a2d9c307381f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f0e738ec794ba1e5c3ef62092fa0b8d279304ac33905812090932de2c95584d5"
+  },
+  "id": "puKfyxs1IgPWFdfy",
+  "tags": []
+}

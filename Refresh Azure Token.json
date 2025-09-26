@@ -1,0 +1,283 @@
+{
+  "name": "Atualizar Token Azure",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -464,
+        -144
+      ],
+      "id": "5e1d5ad4-a884-4018-b437-5c5ca7f2b8df",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.powerbi.com/v1.0/myorg/groups",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.access_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -64,
+        -48
+      ],
+      "id": "93efb3d0-9af9-4782-8eec-1b6ed0268cae",
+      "name": "Validar Token Azure",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://login.microsoftonline.com/90c312e7-ce7d-4262-90e5-6273486db527/oauth2/v2.0/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "body": "=client_id=a42f63fe-1913-4101-899d-34607e457fbb\n&client_secret=_yP8Q~LwkaFxB.pYbPTcsELc.NlYgSqlJWUU2dqI\n&scope=https://analysis.windows.net/powerbi/api/.default \n&grant_type=client_credentials",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        144
+      ],
+      "id": "9de69763-19c4-483d-96cd-b4c5dcf334b2",
+      "name": "Carregar novo token"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM credential_azure WHERE [id] = '3599'"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        -224,
+        -48
+      ],
+      "id": "abff8608-339f-462a-aa7a-df8c5e76b08a",
+      "name": "Query Token",
+      "executeOnce": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "table": "credential_azure"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        144
+      ],
+      "id": "8d6a7ba3-0270-4cce-a33a-dd6056c05b46",
+      "name": "Deletar o Antigo Token",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "table": "credential_azure",
+        "columns": "id, access_token"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        144
+      ],
+      "id": "a31909f6-1930-4d64-b274-bd42e6f0a784",
+      "name": "Inserir Novo Token",
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eba34784-5eb7-4dc0-b894-031eaad2751a",
+              "name": "id",
+              "value": "={{ $json.expires_in }}",
+              "type": "number"
+            },
+            {
+              "id": "75dabb1f-c19c-4616-bf41-2ad0e33478c0",
+              "name": "access_token",
+              "value": "={{ $json.access_token }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        144
+      ],
+      "id": "52c92166-4d89-4f59-bdc9-5cd9285f0203",
+      "name": "Editar Campos"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -64
+      ],
+      "id": "332ded4d-476d-4a82-9b73-5220dc27b691",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -464,
+        32
+      ],
+      "id": "8014a2be-9d62-4433-abe5-9a98b48b55f7",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Validar Token Azure": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Deletar o Antigo Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carregar novo token": {
+      "main": [
+        [
+          {
+            "node": "Editar Campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Token": {
+      "main": [
+        [
+          {
+            "node": "Validar Token Azure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deletar o Antigo Token": {
+      "main": [
+        [
+          {
+            "node": "Carregar novo token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Editar Campos": {
+      "main": [
+        [
+          {
+            "node": "Inserir Novo Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Query Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Query Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "20870cc7-80e5-45f5-a2a5-f725392542ef",
+  "meta": {
+    "instanceId": "f0e738ec794ba1e5c3ef62092fa0b8d279304ac33905812090932de2c95584d5"
+  },
+  "id": "o52WeNcdPwzjazy5",
+  "tags": []
+}
