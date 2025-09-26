@@ -1,0 +1,744 @@
+{
+  "name": "Backup",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "returnAll": true,
+        "filter": {
+          "whatToSearch": "all"
+        },
+        "options": {
+          "fields": "={{ [\"id\",\"name\",\"parents\", \"mimeType\"] }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        608,
+        432
+      ],
+      "id": "8efc4453-a0af-4971-b939-4613e0608ba9",
+      "name": "Trazer todos os Arquivos",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GwkLhHQrT0jXvhyD",
+          "name": "Google Drive account - Dados"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5e1a4568-a894-4de6-a9fc-70a48d20b80a",
+              "name": "id_pai",
+              "value": "={{ $json.parents[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "c5e5cdb9-a503-4e73-b6fd-e8dfe1d07596",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "a4a8ac92-8286-42a2-b53e-2c2d29296281",
+              "name": "nome",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "dbae47a2-521e-4cb9-82df-8a15f1172acb",
+              "name": "tipo",
+              "value": "={{ $json.mimeType }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        784,
+        432
+      ],
+      "id": "4f9817c7-bf78-4466-a5a8-7795d97b6ba5",
+      "name": "Editar Entradas"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        432
+      ],
+      "id": "a804539d-3ea6-4e61-b3ca-b63ffaea1c53",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0195161a-be16-4be4-919d-2224e7687c0c",
+              "leftValue": "={{ $json.id_pai }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        432
+      ],
+      "id": "9327a0bb-7174-4969-ac3d-2cf62cc1e9ac",
+      "name": "Validar id_pai"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    '{{ $json.id }}' AS id,\n    CASE \n        WHEN EXISTS (\n            SELECT 1 \n            FROM dados_drive\n            WHERE id = '{{ $json.id }}'\n        ) THEN 0\n        ELSE 1\n    END AS nao_existe;\n"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        384
+      ],
+      "id": "d254cd9c-5f9b-4cb4-8382-59bd46e2f39c",
+      "name": "Verificar se o id existe no banco",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    '{{ $json.id }}' AS id,\n    CASE \n        WHEN EXISTS (\n            SELECT 1 \n            FROM dados_drive\n            WHERE id = '{{ $json.id }}'\n        ) THEN 0\n        ELSE 1\n    END AS nao_existe;\n"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        528
+      ],
+      "id": "846ccb32-48b0-4ca0-94f7-8693db0c310d",
+      "name": "Verificar se o id existe no banco'",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0071f1b8-e1d2-4909-8f8b-79f25737a5c1",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "97ecec23-f433-40b7-8ca1-a36a47fc4e71",
+              "name": "nome",
+              "value": "={{ $json.nome }}",
+              "type": "string"
+            },
+            {
+              "id": "3a15a118-4014-4669-9874-1e2ed7138824",
+              "name": "tipo",
+              "value": "={{ $json.tipo }}",
+              "type": "string"
+            },
+            {
+              "id": "e17e03cb-a3b7-49c2-8c80-5a96acae7a3c",
+              "name": "id_pai",
+              "value": "=compartilhada",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        528
+      ],
+      "id": "0e345960-052e-41d5-889c-91548aff5554",
+      "name": "Adicionar texto no id_pai"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1408,
+        384
+      ],
+      "id": "fc548029-a499-4452-9ecf-8e711ab43a6b",
+      "name": "Combinar Dados",
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1408,
+        528
+      ],
+      "id": "e1b77439-ec6a-4b18-84f1-e3fe869baedf",
+      "name": "Combinar Dados'",
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9f0f9551-f55e-40ee-9776-c70a44ee7c0c",
+              "leftValue": "={{ $json.nao_existe }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        384
+      ],
+      "id": "4158073b-d5cd-4035-8aee-50c10cc5d735",
+      "name": "Verificar se existe no banco"
+    },
+    {
+      "parameters": {
+        "table": "dados_drive",
+        "columns": "id, nome, id_pai, tipo"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        208
+      ],
+      "id": "eab16e05-c9cc-47dc-b65e-fd99b57a6547",
+      "name": "Inserir no Banco",
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Inserir dados de \nid/nome/id_pai\nNo banco",
+        "height": 368,
+        "width": 1744
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        352,
+        320
+      ],
+      "typeVersion": 1,
+      "id": "3d68511c-bc2d-4a6a-b4c4-20b8161bdfc4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9f0f9551-f55e-40ee-9776-c70a44ee7c0c",
+              "leftValue": "={{ $json.nao_existe }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1536,
+        528
+      ],
+      "id": "f79c3a5f-4463-4ae9-9d76-5815b3481690",
+      "name": "Verificar se existe no banco1"
+    },
+    {
+      "parameters": {
+        "table": "dados_drive",
+        "columns": "id, nome, id_pai, tipo"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1888,
+        496
+      ],
+      "id": "fe8a2de2-97df-4757-8568-99283f8dba73",
+      "name": "Inserir no Banco1",
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "dados_drive",
+        "columns": "id, nome, id_pai, tipo"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1744,
+        368
+      ],
+      "id": "3862bc17-6204-47a7-bd0a-c0d71173cf37",
+      "name": "Update do Banco",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "dados_drive",
+        "columns": "id, nome, id_pai, tipo"
+      },
+      "type": "n8n-nodes-base.microsoftSql",
+      "typeVersion": 1.1,
+      "position": [
+        1744,
+        624
+      ],
+      "id": "021188a1-ec5f-4838-88ed-5cdfde6c33c5",
+      "name": "Update do Banco1",
+      "retryOnFail": true,
+      "credentials": {
+        "microsoftSql": {
+          "id": "BwgcqSUZ4m1gBAF1",
+          "name": "SQL 130 - Teste"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2128,
+        336
+      ],
+      "id": "a7c6f3a2-1f8d-4d07-9374-6727f195955f",
+      "name": "Merge",
+      "executeOnce": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2128,
+        544
+      ],
+      "id": "949dc707-3649-4213-9b0f-87ba0e71b57e",
+      "name": "Merge1",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "empty"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2400,
+        448
+      ],
+      "id": "8058d8c4-cd8c-4eb2-bb6e-0edc596f8a6e",
+      "name": "Merge2",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "command": "papermill \"//192.168.0.210/exata$/T.I/.DAVID/jupyter/download_drive.ipynb\" \"//192.168.0.210/exata$/T.I/.DAVID/jupyter/download_drive_saida.ipynb\" --log-output",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        2592,
+        448
+      ],
+      "id": "7c19ac02-c102-4465-8e1f-2f5bf0f3fcda",
+      "name": "Execute a command",
+      "executeOnce": true,
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        448
+      ],
+      "id": "e1c49674-5181-4236-a539-b959116b2ec0",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Trazer todos os Arquivos": {
+      "main": [
+        [
+          {
+            "node": "Editar Entradas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Editar Entradas": {
+      "main": [
+        [
+          {
+            "node": "Validar id_pai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Trazer todos os Arquivos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar id_pai": {
+      "main": [
+        [
+          {
+            "node": "Combinar Dados",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Verificar se o id existe no banco",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Adicionar texto no id_pai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar se o id existe no banco": {
+      "main": [
+        [
+          {
+            "node": "Combinar Dados",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Verificar se o id existe no banco'": {
+      "main": [
+        [
+          {
+            "node": "Combinar Dados'",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Adicionar texto no id_pai": {
+      "main": [
+        [
+          {
+            "node": "Verificar se o id existe no banco'",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Combinar Dados'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combinar Dados": {
+      "main": [
+        [
+          {
+            "node": "Verificar se existe no banco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combinar Dados'": {
+      "main": [
+        [
+          {
+            "node": "Verificar se existe no banco1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar se existe no banco": {
+      "main": [
+        [
+          {
+            "node": "Inserir no Banco",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update do Banco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inserir no Banco": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar se existe no banco1": {
+      "main": [
+        [
+          {
+            "node": "Inserir no Banco1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update do Banco1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inserir no Banco1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update do Banco": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Update do Banco1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a command": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "3c091dd7-b3ad-482c-ac76-e05a62f1949d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f0e738ec794ba1e5c3ef62092fa0b8d279304ac33905812090932de2c95584d5"
+  },
+  "id": "5UItCRZOp5EgSnVx",
+  "tags": []
+}
