@@ -1,0 +1,252 @@
+{
+  "name": "Permissões Novas Unidades",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        96
+      ],
+      "id": "cf1c15ca-0cab-4114-a032-7cf2a1e1bacc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c \"net use Z: \\\\\\\\192.168.0.210\\\\exata$ /user:contabil\\\\n8n.exata Exata#2025 /persistent:no && cd /d Z:\\\\CLIENTES\\\\{{ $json.pasta }} && Z:\\\\T.I\\\\bats\\\\n8n\\\\remover.bat && net use Z: /delete\"",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        96,
+        96
+      ],
+      "id": "92557350-b14b-4a4b-ba02-bff7693e1d06",
+      "name": "Executar Remover Herança.bat",
+      "alwaysOutputData": false,
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c \"net use Z: \\\\\\\\192.168.0.210\\\\exata$ /user:contabil\\\\n8n.exata Exata#2025 /persistent:no && cd /d Z:\\\\CLIENTES\\\\{{ $('ALTERAR NOME PASTA').item.json.pasta }} && cmd /c \"Z:\\\\T.I\\\\bats\\\\n8n\\\\permissao_dentro_nova_unidade.bat\" && net use Z: /delete\"",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        272,
+        96
+      ],
+      "id": "d3323e39-2f68-406e-8f67-bb443e9a29b1",
+      "name": "Executar Permissoes .bat",
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c \"net use Z: \\\\\\\\192.168.0.210\\\\exata$ /user:contabil\\\\n8n.exata Exata#2025 /persistent:no && cmd /c \"Z:\\T.I\\bats\\n8n\\permissoes_academia.bat {{ $('ALTERAR NOME PASTA').item.json.pasta }}\"",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -128
+      ],
+      "id": "690d1eea-37ea-4254-9e83-621bf6dbd1ea",
+      "name": "Executar icalcs Academia",
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c \"net use Z: \\\\\\\\192.168.0.210\\\\exata$ /user:contabil\\\\n8n.exata Exata#2025 /persistent:no && cmd /c \"Z:\\T.I\\bats\\n8n\\permissoes_clinicas.bat {{ $('ALTERAR NOME PASTA').item.json.pasta }}\"",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        608,
+        48
+      ],
+      "id": "1de52a20-3719-4b85-b4b6-ba5688f5c64b",
+      "name": "Executar icalcs Clinicas",
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c \"net use Z: \\\\\\\\192.168.0.210\\\\exata$ /user:contabil\\\\n8n.exata Exata#2025 /persistent:no && cmd /c \"Z:\\T.I\\bats\\n8n\\permissoes_cartao.bat {{ $('ALTERAR NOME PASTA').item.json.pasta }}\"",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        608,
+        224
+      ],
+      "id": "41dd07b4-8fe4-41ba-8349-20dfb6afc62c",
+      "name": "Executar icalcs Cartão",
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "command": "=cmd /c \"net use Z: \\\\\\\\192.168.0.210\\\\exata$ /user:contabil\\\\n8n.exata Exata#2025 /persistent:no && cmd /c \"Z:\\T.I\\bats\\n8n\\permissoes_makeup.bat {{ $('ALTERAR NOME PASTA').item.json.pasta }}\"",
+        "cwd": "="
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        608,
+        400
+      ],
+      "id": "e88c1d55-1dce-41a0-a086-d5eb5f3215e2",
+      "name": "Executar icalcs Makeup",
+      "credentials": {
+        "sshPassword": {
+          "id": "mAfR7WdUViYBKIRS",
+          "name": "SSH Password account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "SEMPRE ALTERAR O NOME DA PASTA A SER EXECUTADA NO \"ALTERAR NOME PASTA\" E ATIVAR O NODE CORESPONDENTE A PASTA DA UNIDADE\n",
+        "height": 768,
+        "width": 1184,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -384,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "ed34a3f9-654e-4b79-bb53-65ae866fd1fb",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7eaff2ed-1048-4f21-8802-f6b95a78c4be",
+              "name": "pasta",
+              "value": "teste",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -96,
+        96
+      ],
+      "id": "b4aa0b72-1cb1-49ba-8144-06c8025af065",
+      "name": "ALTERAR NOME PASTA"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Executar Remover Herança.bat": {
+      "main": [
+        [
+          {
+            "node": "Executar Permissoes .bat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "ALTERAR NOME PASTA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar Permissoes .bat": {
+      "main": [
+        [
+          {
+            "node": "Executar icalcs Academia",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Executar icalcs Clinicas",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Executar icalcs Cartão",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Executar icalcs Makeup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ALTERAR NOME PASTA": {
+      "main": [
+        [
+          {
+            "node": "Executar Remover Herança.bat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "56996065-bdb0-4604-bcee-1b888bea68a2",
+  "meta": {
+    "instanceId": "f0e738ec794ba1e5c3ef62092fa0b8d279304ac33905812090932de2c95584d5"
+  },
+  "id": "arNyjWbePPodpQPn",
+  "tags": []
+}
